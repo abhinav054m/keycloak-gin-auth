@@ -1,26 +1,17 @@
-import (
-	"github.com/gin-gonic/gin"
-)
+package main
 
+import "github.com/gin-gonic/gin"
+import 	"github.com/abhinav054m/keycloak-gin-auth/keycloak"
 
-func Logger() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		t := time.Now()
+func main() {
+	r := gin.Default()
+	r.Use(keycloak.Logger())
 
-
-		// Set example variable
-		c.Set("example", "12345")
-
-		// before request
-
-		c.Next()
-
-		// after request
-		latency := time.Since(t)
-		log.Print(latency)
-
-		// access the status we are sending
-		status := c.Writer.Status()
-		log.Println(status)
-	}
+	r.GET("/ping", func(c *gin.Context) {
+		c.JSON(200, gin.H{
+			"message": "pong",
+		})
+	})
+	r.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
 }
+
